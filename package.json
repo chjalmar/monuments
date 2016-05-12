@@ -1,0 +1,25 @@
+{
+  "name": "Monumentos",
+  "version": "1.0.0",
+  "description": "API de Monumentos Nacionales de Santiago Chile",
+  "main": "stream.js",
+  "dependencies": {
+    "http": "^0.0.0",
+    "fs":"^0.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chjalmar/monuments.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chjalmar/monuments/issues"
+  },
+  "homepage": "https://github.com/chjalmar/monuments#readme"
+}
