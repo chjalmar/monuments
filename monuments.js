@@ -10,7 +10,7 @@ x('http://www.monumentos.cl/catalogo/625/w3-propertyvalue-44171.html', '.articul
     datos: x('#documentos_mediateca .titulo a@href',  {
       direccion:'h4.abstract',
       descripcion:'#presentacion .articulocompleto',
-      url_imagen: '.binary-imagen_1 a@href',
+      url_imagen: '.binary-imagen_1 img@src',
       coords: x('#kml_pa_access a@href', {xy: 'coordinates'})
     })
   }])
