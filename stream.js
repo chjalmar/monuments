@@ -1,11 +1,12 @@
 var http = require('http')
 var fs = require("fs")
+var port = process.env.PORT || 3000;
 
 var server = http.createServer(function (request, response) {
-             var src = fs.createReadStream(process.argv[3])
+             var src = fs.createReadStream("results.json")
              src.pipe(response);
 });
-server.listen(process.argv[2]);
+server.listen(port);
 
 /* ejemplo de ejecución (en el shell:) ~:node stream.js 8000 C:\eula.1028.txt */
 /*A cualquier request enviado al servidor (localhost en nuestro caso) desde un navegador, al puerto especificado en
