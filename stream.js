@@ -3,7 +3,11 @@ var fs = require("fs")
 var port = process.env.PORT || 3000;
 
 var server = http.createServer(function (request, response) {
-             var src = fs.createReadStream("results.json")
+             var src = fs.createReadStream("results.json");
+             response.setHeader('Access-Control-Allow-Origin', '*');
+	           response.setHeader('Access-Control-Request-Method', '*');
+	           response.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+	           response.setHeader('Access-Control-Allow-Headers', '*');
              src.pipe(response);
 });
 server.listen(port);
