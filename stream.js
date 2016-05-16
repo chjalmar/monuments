@@ -1,5 +1,6 @@
 var http = require('http')
 var fs = require("fs")
+
 var port = process.env.PORT || 3000;
 
 var server = http.createServer(function (request, response) {
@@ -12,7 +13,7 @@ var server = http.createServer(function (request, response) {
 });
 server.listen(port);
 
-/* ejemplo de ejecuciÛn (en el shell:) ~:node stream.js 8000 C:\eula.1028.txt */
+/* ejemplo de ejecuci√≥n (en el shell:) ~:node stream.js 8000 C:\eula.1028.txt */
 /*A cualquier request enviado al servidor (localhost en nuestro caso) desde un navegador, al puerto especificado en
-el 1er argumento enviado por lÌnea de comandos, el programa le enviar· el archivo localizado en el servidor, 
-especificado en el 2do argumento enviado por lÌnea de comandos. */
+el 1er argumento enviado por l√≠nea de comandos, el programa le enviar√° el archivo localizado en el servidor, 
+especificado en el 2do argumento enviado por l√≠nea de comandos. */

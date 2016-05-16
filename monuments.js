@@ -1,5 +1,7 @@
-﻿var Xray = require('x-ray');
+﻿var request = require('./superagent.js');
+var Xray = require('x-ray');
 var x = Xray().throttle(32,500);
+x = Xray().driver(request('Windows-1252'));
 
 x('http://www.monumentos.cl/catalogo/625/w3-propertyvalue-44171.html', '.articulocompleto', {
   nombre: 'h1.titulo',
