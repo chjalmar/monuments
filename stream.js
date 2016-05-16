@@ -1,14 +1,15 @@
 var http = require('http')
 var fs = require("fs")
-
+var encoding = require("encoding");
 var port = process.env.PORT || 3000;
 
 var server = http.createServer(function (request, response) {
-             var src = fs.createReadStream("results.json");
+             var src = fs.createReadStream("results.json.bak", {encoding: "binary"});
              response.setHeader('Access-Control-Allow-Origin', '*');
 	           response.setHeader('Access-Control-Request-Method', '*');
 	           response.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
 	           response.setHeader('Access-Control-Allow-Headers', '*');
+             encoding.convert(response,"UTF-8","ISO-8859-1")
              src.pipe(response);
 });
 server.listen(port);
