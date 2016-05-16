@@ -3,7 +3,7 @@ var fs = require("fs")
 var port = process.env.PORT || 3000;
 
 var server = http.createServer(function (request, response) {
-             var src = fs.createReadStream("results.json.bak", {encoding: "binary"});
+             var src = fs.createReadStream("results.json", {encoding: "binary"});
              response.setHeader('Access-Control-Allow-Origin', '*');
 	           response.setHeader('Access-Control-Request-Method', '*');
 	           response.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
