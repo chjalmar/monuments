@@ -1,0 +1,55 @@
+/* Empty. Add your own CSS if you like */
+
+.mapa_monumentos {
+  clear: both;
+  height: 100%;
+  border: 1px solid #CCC;
+  position: relative;
+}
+
+.cercana img {
+    float:left;
+    cursor: pointer;
+}
+
+.direccion {
+  font-style: italic;	
+}
+
+.aside_mapa {
+  display:none;
+  padding:7px;
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  z-index: 1001;
+  width: 25%;
+  min-height:100px;
+  max-height:70%;
+  background: #f4f3f2;
+  border: 1px solid #CCC;
+  overflow-y: scroll;
+  overflow-x:hidden;
+}
+
+@media (max-width : 768px) {
+  .aside_mapa {
+	  top: 10%;
+	  width: 50%;
+  }	
+}
+
+@media (max-width : 640px) {
+  .aside_mapa {
+	  top: 10%;
+	  width: 80%;
+  }	
+}
+
+.floating-btn {
+  position: absolute;
+  width: 35%;
+  bottom: 0;
+  right: 30%;
+  z-index:2;
+}

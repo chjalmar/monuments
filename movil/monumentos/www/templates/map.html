@@ -1,0 +1,27 @@
+﻿<ion-view view-title="Monumentos">
+    <ion-content>
+        <div class="mapa_monumentos">
+          <div id="map"></div>
+          <div class="aside_mapa">
+            <p class="cercana"><img id="cerrar_sucursal" src="img/close_button.png"></p>
+             <br>
+             <div id="imagen_monumento" class="thumbs_sucursales">             	
+             </div> 
+             <div id="nombre_monumento">             	
+             </div>
+             <div id="direccion_monumento" class="direccion">							
+             </div>
+             <br>
+             <div id="info_monumento">               
+             </div>
+          </div>
+          
+        </div>
+        <div align="center">
+        <button id="elmio" ng-click="UpdateMapLocation()" ng-show=true
+          class="button button-positive floating-btn">
+          Actualizar mapa
+        </button></div>
+    </ion-content>
+    
+</ion-view>
