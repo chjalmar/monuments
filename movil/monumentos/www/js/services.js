@@ -1,5 +1,29 @@
 angular.module('starter.services', [])
 
+.factory('ConnectivityMonitor', function($rootScope, $cordovaNetwork){
+ 
+  return {
+    isOnline: function(){
+ 
+      if(ionic.Platform.isWebView()){
+        return $cordovaNetwork.isOnline();    
+      } else {
+        return navigator.onLine;
+      }
+ 
+    },
+    ifOffline: function(){
+ 
+      if(ionic.Platform.isWebView()){
+        return !$cordovaNetwork.isOnline();    
+      } else {
+        return !navigator.onLine;
+      }
+ 
+    }
+  }
+})
+
 .factory('pouchService',['$q', function($q){
   var _db;    
 
@@ -100,8 +124,9 @@ angular.module('starter.services', [])
   }
 })
 
-.factory('GoogleMaps', function($cordovaGeolocation, Markers){
- 
+.factory('GoogleMaps', function($cordovaGeolocation, $ionicLoading, $rootScope, $cordovaNetwork, Markers, ConnectivityMonitor){
+  
+  var apiKey = false;
   var markerCache = [];
   var map = null;
  
@@ -131,9 +156,8 @@ angular.module('starter.services', [])
  
       });
       
-       
     }, function(error){
-      console.log("Could not get location");
+      console.log("No se pudo obtener la localización.");
  
         //Load the markers
         loadMarkers();
@@ -169,20 +193,16 @@ angular.module('starter.services', [])
         //Load the markers
         
         loadMarkers();
+        enableMap();
  
       });
       
-      map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(document.getElementById("elmio"));
- 
     }, function(error){
-      console.log("Could not get location");
- 
-        //Load the markers
-        loadMarkers();
+      console.log("No se pudo obtener la localización.");
     });
  
   }
- 
+   
   function loadMarkers(){
  
       //Get all of the markers from our Markers factory
@@ -288,10 +308,111 @@ angular.module('starter.services', [])
     return vista;	
   }
   
+  function enableMap(){
+    $ionicLoading.hide();
+  }
+ 
+  function disableMap(){
+    $ionicLoading.show({
+      template: 'Debes estar conectado a Internet para poder ver este mapa.'
+    });
+  }
+ 
+  function loadGoogleMaps(){
+ 
+    $ionicLoading.show({
+      template: 'Cargando Google Maps...'
+    });
+ 
+    //This function will be called once the SDK has been loaded
+    window.mapInit = function(){
+      initMap();
+    };  
+ 
+    //Create a script element to insert into the page
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.id = "googleMaps";
+ 
+    //Note the callback function in the URL is the one we created above
+    if(apiKey){
+      script.src = 'http://maps.google.com/maps/api/js?key=' + apiKey 
+        + '&callback=mapInit';
+    } else {
+      script.src = 'http://maps.google.com/maps/api/js?callback=mapInit';
+    }
+ 
+    document.body.appendChild(script);
+ 
+  }
+ 
+  function checkLoaded(){
+  	
+    if(typeof google == "undefined" || typeof google.maps == "undefined"){
+      loadGoogleMaps();
+    } else {
+      enableMap();
+    }       
+  }
+  
+   function addConnectivityListeners(){
+ 
+    if(ionic.Platform.isWebView()){
+ 
+      // Check if the map is already loaded when the user comes online, 
+      //if not, load it
+      $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
+        checkLoaded();
+      });
+ 
+      // Disable the map when the user goes offline
+      $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
+        disableMap();
+      });
+ 
+    }
+    else {
+ 
+      //Same as above but for when we are not running on a device
+      window.addEventListener("online", function(e) {
+        checkLoaded();
+      }, false);    
+ 
+      window.addEventListener("offline", function(e) {
+        disableMap();
+      }, false);  
+    }
+ 
+  }
+  
   
   return {
-    init: function(){
-      initMap();
+    init: function(key){
+ 
+      if(typeof key != "undefined"){
+        apiKey = key;
+      }
+      
+      if(typeof google == "undefined" || typeof google.maps == "undefined"){
+        console.warn("Debe cargarse Google Maps SDK");
+        disableMap();
+ 
+        if(ConnectivityMonitor.isOnline()){
+          loadGoogleMaps();
+        }
+      }
+      else {
+        console.log(typeof google);
+        if(ConnectivityMonitor.isOnline()){
+          initMap();
+          enableMap();
+        } else {
+          disableMap();
+        }
+      }
+ 
+      addConnectivityListeners();
+ 
     },
     relocalizar: relocalizar
   }
