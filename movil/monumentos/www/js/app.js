@@ -21,7 +21,7 @@ angular.module('starter', ['ionic','ngCordova','starter.controllers', 'starter.s
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
-    GoogleMaps.init("AIzaSyACOF-x2A2XlmG7dlBuNvD1UU7H4SC9SDo");
+    GoogleMaps.init("");
   });
 })
 
