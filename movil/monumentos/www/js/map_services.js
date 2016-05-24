@@ -1,91 +1,7 @@
 angular.module('starter.services', [])
-
-.factory('ConnectivityMonitor', function($rootScope, $cordovaNetwork){
- 
-  return {
-    isOnline: function(){
- 
-      if(ionic.Platform.isWebView()){
-        return $cordovaNetwork.isOnline();    
-      } else {
-        return navigator.onLine;
-      }
- 
-    },
-    ifOffline: function(){
- 
-      if(ionic.Platform.isWebView()){
-        return !$cordovaNetwork.isOnline();    
-      } else {
-        return !navigator.onLine;
-      }
- 
-    }
-  }
-})
-
-.factory('pouchService',['$q', function($q){
-  var _db;    
-
-    // We'll need this later.
-    var _monuments;
-
-    return {
-        initDB: initDB,
-
-        // We'll add these later.
-        getAllMonuments: getAllMonuments,
-        addMonuments: addMonuments
-        
-    };
-
-    function initDB() {
-        // Creates the database or opens if it already exists
-        _db = new PouchDB('monuments');
-    };
-    
-    //En esta función agrego a la BD todos los monumentos con coordenadas
-    function addMonuments(monuments) {  
-      
-      function guardaTodos(monuments) {
-        var records = monuments.data.monumentos;
-        for (var i = 0; i < records.length; i++) {
- 
-            if (records[i].datos.coords.xy) {
-              _db.post(records[i]);
-            }
-        }
-      }
-      return $q.when(guardaTodos(monuments));
-      
-    };
-    
-    function getAllMonuments() {  
-    if (!_monuments) {
-       return $q.when(_db.allDocs({ include_docs: true}))
-            .then(function(docs) {
-
-                // Each row has a .doc object and we just want to send an 
-                // array of birthday objects back to the calling controller,
-                // so let's map the array to contain just the .doc objects.
-                _monuments = docs.rows.map(function(row) {
-                    return row.doc;
-                });
-
-                //CHJ:eliminada funcion para actualizar DB; no hace falta, DB será solo lectura
-                
-                return _monuments;
-            });
-    } else {
-        // Return cached data as a promise
-        return $q.when(_monuments);
-    }
-};
-    
-    	
-}])
-
-
+//SOLOMARCO: líneas así comentadas son para mostrar sólo los marcadores que caben en la parte visible del mapa;
+//esa parte visible está delimitada por la localización actual, lo que impide proyectar la caminata hacia lugares
+//que se salen del marco. No me gustó, así que las comenté
 .factory('Markers', function($http, pouchService) {
  
   var markers = [];
@@ -98,25 +14,15 @@ angular.module('starter.services', [])
       	
         
         if (monumentos.length > 1) {
-          markers = monumentos;
-          return markers;	
+          return monumentos;	
         }	else {
           var url = "https://intense-shelf-84410.herokuapp.com/";
           return $http.get(url).then(function(response){
-            markers = response;
-            pouchService.addMonuments(response);
-            //TODO: aquí debería devolver los objetos desde la BD
-            //así luego puedo arreglar los registros antes del insert,
-            //y pasar al mapa el objeto ordenado y limpio de monumentos sin coordenadas
-            return markers.data.monumentos;
+            //addMonuments al terminar devuelve el arreglo de puntos validados (con coordenadas)
+            return pouchService.addMonuments(response);
           });  	
         }
-      
-      	
       });
-      
-      
-       
     },
     getMarker: function(id){
  
@@ -129,44 +35,21 @@ angular.module('starter.services', [])
   var apiKey = false;
   var markerCache = [];
   var map = null;
- 
-  function relocalizar(){
-  	var options = {timeout: 10000, enableHighAccuracy: true};
- 
-    $cordovaGeolocation.getCurrentPosition(options).then(function(position){
- 
-      var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
- 
-      map.setCenter(latLng);
- 
-      //Wait until the map is loaded
-      google.maps.event.addListenerOnce(map, 'idle', function(){
- 
-        //agregar marcador de mi posición actual
-        
-        var marcadoractual = new google.maps.Marker({
-          map: map,
-          animation: google.maps.Animation.DROP,
-          position: latLng
-        });
-        
-        //Load the markers
-        
-        loadMarkers();
- 
-      });
-      
-    }, function(error){
-      console.log("No se pudo obtener la localización.");
- 
-        //Load the markers
-        loadMarkers();
-    });
-  }
+  var breadCrumbs = [];
+  var redDot = {};
+    
   function initMap(){
  
     var options = {timeout: 10000, enableHighAccuracy: true};
- 
+    redDot = {
+          	fillColor: '#F75C50',
+          	fillOpacity: 0.8,
+          	strokeWeight: 0.5,
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 4
+          };
+    
+     
     $cordovaGeolocation.getCurrentPosition(options).then(function(position){
  
       var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -187,9 +70,13 @@ angular.module('starter.services', [])
         var marcadoractual = new google.maps.Marker({
           map: map,
           animation: google.maps.Animation.DROP,
-          position: latLng
+          position: latLng,
+          
         });
         
+        //agrego mi marcador de localización al arreglo de localizaciones
+        breadCrumbs.push(marcadoractual);
+              
         //Load the markers
         
         loadMarkers();
@@ -202,6 +89,52 @@ angular.module('starter.services', [])
     });
  
   }
+  
+  function relocalizar(){
+  	var options = {timeout: 10000, enableHighAccuracy: true};
+ 
+    $cordovaGeolocation.getCurrentPosition(options).then(function(position){
+ 
+      var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+ 
+      map.setCenter(latLng);
+ 
+      //Wait until the map is loaded
+      google.maps.event.addListenerOnce(map, 'idle', function(){
+ 
+        //TODO: código para convertir los marcadores anteriores en puntos, y sólo dejar como gota roja grande la última posición
+        
+        //convierto en piuntos los marcadores de posición anteriores
+        var zIndex;
+        for (var i = 0; i < breadCrumbs.length; i++) {
+          breadCrumbs[i].setIcon(redDot);	
+          breadCrumbs[i].setZIndex(0);
+        }
+        
+        //agregar marcador de mi posición actual
+        
+        var marcadoractual = new google.maps.Marker({
+          map: map,
+          animation: google.maps.Animation.DROP,
+          position: latLng,
+          zIndex: 100000
+        });
+        
+        breadCrumbs.push(marcadoractual);
+          
+        //Load the markers
+        
+        loadMarkers();
+ 
+      });
+      
+    }, function(error){
+      console.log("No se pudo obtener la localización.");
+ 
+        //Load the markers
+        loadMarkers();
+    });
+  }
    
   function loadMarkers(){
  
@@ -213,7 +146,7 @@ angular.module('starter.services', [])
         
         
         //obtengo límites del rectángulo de la vista de mapa actual
-        var vista = LimVistaActual();
+        var vista = map.getBounds();
         
         //agrego función de cerrar infoWindow
         jQuery('#cerrar_sucursal').click(function() {
@@ -231,7 +164,7 @@ angular.module('starter.services', [])
             
             //muestro sólo los puntos que están dentro de mi vista actual
             
-            if (vista.contains(markerPos) && !markerExists(markerPos.lat(), markerPos.lng())) {
+          if (vista.contains(markerPos) && !markerExists(markerPos.lat(), markerPos.lng())) {
               
               var image = 'img/7_flag.png';
               // Añadir marcador al mapa
@@ -253,7 +186,7 @@ angular.module('starter.services', [])
               
               addInfoWindow(marker, record);
               
-            }
+          }
           }
         }
  
@@ -298,14 +231,6 @@ angular.module('starter.services', [])
           
       });
  
-  }
-  
-  function LimVistaActual() {
-    var vistaactual = map.getBounds();
-    var sw = new google.maps.LatLng(vistaactual.H.H,vistaactual.j.j);
-    var ne = new google.maps.LatLng(vistaactual.H.j,vistaactual.j.H);
-    var vista = new google.maps.LatLngBounds(sw,ne);
-    return vista;	
   }
   
   function enableMap(){
@@ -355,7 +280,7 @@ angular.module('starter.services', [])
     }       
   }
   
-   function addConnectivityListeners(){
+  function addConnectivityListeners(){
  
     if(ionic.Platform.isWebView()){
  
