@@ -57,6 +57,7 @@ angular.module('starter.services', [])
       var mapOptions = {
         center: latLng,
         zoom: 15,
+        draggable: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
  
