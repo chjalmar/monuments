@@ -1,0 +1,85 @@
+﻿<ion-view view-title="Monumentos">
+    <ion-content>
+     <div class="rowa">   
+       <div class="col-xs-6">
+       
+         <h2>API de Patrimonio de Santiago del Consejo Nacional de Monumentos de Chile</h2>
+         
+         <!-- item list -->
+         <div class="panel panel-default">
+           <div class="panel-heading"><a href="">Propósito</a></div>
+         </div>
+         <p>Con la intención de hacer un aporte a la ciudad de Santiago y sus habitantes en la proximidad del Día del Patrimonio,
+         	he creado un pequeño API para acceder a la información del patrimonio de la ciudad disponible en www.monumentos.cl
+         	para la Región Metropolitana. ¡Espero este pequeño aporte nos ayude a disfrutar más de la ciudad!</p>
+         
+         <hr>
+         
+         <div class="panel panel-default">
+           <div class="panel-heading"><a href="">Descripción y Herramientas</a></div>
+         </div>
+         <p>El API se encuentra publicado en la dirección:</p>
+         <p><a href="https://intense-shelf-84410.herokuapp.com/" target="_blank">https://intense-shelf-84410.herokuapp.com/</a></p>
+         <p>Y devuelve un objeto en formato JSON con todos los monumentos disponibles en la página para la Región 
+         	Metropolitana. Para cada monumento el objeto contiene, según esté o no disponible la información en la Web del CNM:
+         <ol>
+         	  <li>- ID</li>
+         	  <li>- Nombre del Monumento</li>
+         	  <li>- Vínculo a la página del CNM para el Monumento</li>
+         	  <li>- Datos (dirección, descripción, url de una foto, y las coordenadas dadas para el monumento).</li>
+         </ol>		
+         </p>
+         <p>El archivo JSON proporcionado contiene la especificación CORS en sus headers; esto quiere decir que puede
+         	recibir requests desde cualquier origen.
+         </p>
+         <p>Para más información sobre el desarrollo del API, puede encontrar el código en mi <a href="https://github.com/chjalmar/monuments" target="_blank">repo Git</a>.
+         </p>
+         <hr>
+         
+         <div class="panel panel-default">
+           <div class="panel-heading"><a href="">Ejemplo de utilización del API</a></div>
+         </div>
+         <p>El Mapa de la derecha es un ejemplo de aplicación en AngularJS que descarga el API, procesa y almacena aquellos monumentos
+         	que poseen coordenadas; luego muestra la información en una ventana al hacer click sobre el icono del monumento.</p>
+         	<p>La aplicación de ejemplo es parte de un proyecto de aplicación móvil en Ionic/Cordova, que será publicada
+         		próximamente en la Play Store para Android.</p>
+         <hr>
+         
+         <div class="panel panel-default">
+           <div class="panel-heading"><a href="">Información de Contacto</a></div>
+         </div>
+         <p>Desarrollo del API y la aplicación de ejemplo por Chjalmar Ekman (chjalmar@gmail.com).</p>
+         <hr>
+         <!-- /item list -->
+         
+         <p>
+         <a href="https://github.com/chjalmar/monuments" target="_blank">Código fuente</a>
+         </p>
+         
+       </div>
+        
+        
+        
+        
+        <div class="col-xs-6" style="height:100%; position:fixed; right:0px">
+          <div class="mapa_monumentos">
+            <div id="map" style="overflow: hidden; transform:translateZ(0px); display:block;"></div>
+            <div class="aside_mapa">
+              <p class="cercana"><img id="cerrar_sucursal" src="img/close_button.png"></p>
+               <br>
+               <div id="imagen_monumento" class="thumbs_sucursales">             	
+               </div> 
+               <div id="nombre_monumento">             	
+               </div>
+               <div id="direccion_monumento" class="direccion">							
+               </div>
+               <br>
+               <div id="info_monumento">               
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>    
+    </ion-content>
+    
+</ion-view>
