@@ -121,7 +121,7 @@ angular.module('starter.services', [])
             
             //muestro sólo los puntos que están dentro de mi vista actual
             
-          if (vista.contains(markerPos) && !markerExists(markerPos.lat(), markerPos.lng())) {
+          //if (vista.contains(markerPos) && !markerExists(markerPos.lat(), markerPos.lng())) {
               
               var image = 'img/7_flag.png';
               // Añadir marcador al mapa
@@ -143,7 +143,7 @@ angular.module('starter.services', [])
               
               addInfoWindow(marker, record);
               
-          }
+          //}
           }
         }
  
