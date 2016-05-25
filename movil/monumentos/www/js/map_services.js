@@ -16,7 +16,7 @@ angular.module('starter.services', [])
         if (monumentos.length > 1) {
           return monumentos;	
         }	else {
-          var url = "https://intense-shelf-84410.herokuapp.com/";
+          var url = "http://intense-shelf-84410.herokuapp.com/";
           return $http.get(url).then(function(response){
             //addMonuments al terminar devuelve el arreglo de puntos validados (con coordenadas)
             return pouchService.addMonuments(response);
@@ -327,7 +327,6 @@ angular.module('starter.services', [])
         }
       }
       else {
-        console.log(typeof google);
         if(ConnectivityMonitor.isOnline()){
           initMap();
           enableMap();
