@@ -1,5 +1,9 @@
 /* Empty. Add your own CSS if you like */
 
+.col-xs-6.contenido {
+  margin: 15px;
+}
+
 .mapa_monumentos {
   clear: both;
   height: 100%;
