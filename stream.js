@@ -2,8 +2,10 @@ var http = require('http')
 var fs = require("fs")
 var port = process.env.PORT || 3000;
 
+var servefile = "results.json";
+
 var server = http.createServer(function (request, response) {
-             var src = fs.createReadStream("results.json", {encoding: "utf8"});
+             var src = fs.createReadStream(servefile, {encoding: "utf8"});
              response.setHeader('Access-Control-Allow-Origin', '*');
 	           response.setHeader('Access-Control-Request-Method', '*');
 	           response.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
